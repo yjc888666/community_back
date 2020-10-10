@@ -35,6 +35,18 @@
                     </tbody>
                 </table>
             </div>
+            <div class="block page" style="text-align: center" v-show="pageShow">
+                 <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-sizes="[5,10,20,30]"
+                        :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="mytotal">
+                  </el-pagination>
+            </div>
+
             <div class="layui-tab-brief"  v-show="addShow">
                 <div class="layui-tab-content">
                     <div class="layui-tab-item layui-show">
