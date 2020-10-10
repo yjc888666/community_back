@@ -19,6 +19,7 @@
     "echarts": "^3.5.4",
     "element-ui": "^2.4.11",
     "font-awesome": "^4.7.0",
+    "qs": "^6.9.4",
     "screenfull": "^3.3.3",
     "time-formater": "^1.0.1",
     "vue": "^2.2.6",

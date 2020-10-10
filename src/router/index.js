@@ -65,7 +65,13 @@ const routes = [
             path: '/attendance',
             component: resolve => require(['@/page/sign/attendance'], resolve),
             meta: ['考勤管理','迟到早退'],
-        },{
+        },
+        {
+            path: '/viewAttendance',
+            component: resolve => require(['@/page/sign/viewAttendance'], resolve),
+            meta: ['考勤管理','考勤信息'],
+        }
+        ,{
             path: '/siteConfig',
             component: siteConfig,
             meta: ['系统配置','站点配置'],
@@ -189,6 +195,16 @@ const routes = [
             path: '/bug',
             component: bug,
             meta: ['附件管理','购买纪录']
+        },
+        {
+            path: '/part',
+            component: resolve => require(['@/page/part_job/part'], resolve),
+            meta: ['部门岗位管理','部门管理']
+        },
+        {
+            path: '/job',
+            component: resolve => require(['@/page/part_job/job'], resolve),
+            meta: ['部门岗位管理','岗位管理']
         }
         ]
 	}

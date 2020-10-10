@@ -10,7 +10,9 @@ import MyAxios from '@/config/MyAxios'
 Vue.config.productionTip = false;
 
 import global_url from './components/Global'
-Vue.prototype.GLOBAL = global_url
+Vue.prototype.GLOBAL = global_url;
+Vue.prototype.$baseUrl = global_url.baseUrl
+
 
 Vue.use(ElementUI);
 Vue.use(MyAxios);

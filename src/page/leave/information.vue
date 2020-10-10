@@ -1,5 +1,5 @@
 <template>
-    <div style="margin-bottom:10px;">
+    <div style="margin-bottom:10px;" class="info">
         <div class="layui-form" v-show="menuShow">
             <div class="layui-field-box">
                 <div class="layui-box-searchber">
@@ -8,11 +8,12 @@
                     </a>
                     <form class="layui-form layui-form-pane">
                         <div class="layui-inline" style="width: 110px;">
+
                             <!--<el-input v-model="username" placeholder="用户名查询" @change="getuser()"></el-input>-->
-                            <el-select v-model="username" filterable placeholder="用户名"  @change="getuser()" clearable>
+                            <el-select v-model="username"  placeholder="用户名"  @change="getuser()" clearable>
                                 <el-option
                                     v-for="item in optionsUser"
-                                    :key="item.username"
+                                    :key="item.id"
                                     :label="item.username"
                                     :value="item.username">
                                 </el-option>
@@ -34,62 +35,218 @@
                     </form>
                 </div>
                 <hr>
-                <table class="layui-table admin-table">
-                    <thead>
-                    <tr>
-                        <th align="center">ID</th>
-                        <th align="center">用户名</th>
-                        <th align="center">头像</th>
-                        <th align="center">性别</th>
-                        <th align="center">职称</th>
-                        <th align="center">出生日期</th>
-                        <th align="center">手机号</th>
-                        <th align="center">邮箱</th>
-                        <th align="center">学历</th>
-                        <th align="center">学校</th>
-                        <th align="center">状态</th>
-                        <th align="center">薪资</th>
-                        <th align="center">加班费</th>
-                        <th align="center">餐补</th>
-                        <th align="center">交通补助</th>
-                        <th align="center">全勤奖</th>
-                        <th align="center">绩效</th>
-                        <th align="center">其他</th>
-                        <th align="center">奖励</th>
-                        <th align="center">操作</th>
-                    </tr>
-                    </thead>
-                    <tbody id="content">
-
-                    <tr v-for="(item,index) in signList" :key="index">
-                        <td>{{index+1}}</td>
-                        <!--<td @click="detailsEvent(item.uid)"><a href="javascript:;" target="_blank">{{item.username}}</a></td>-->
-                        <td><a href="javascript:;" target="_blank">{{item.username}}</a></td>
-                        <td><img :src="url+item.content" alt=""></td>
-                        <td>{{item.gender}}</td>
-                        <td>{{item.position_id1}}</td>
-                        <td>{{item.birthday }}</td>
-                        <td>{{item.phone}}</td>
-                        <td>{{item.email}}</td>
-                        <td>{{item.education}}</td>
-                        <td>{{item.university}}</td>
-                        <td>{{item.status1}}</td>
-                        <td>{{item.salary}}</td>
-                        <td>{{item.overtime_pay}}</td>
-                        <td>{{item.meal_subsidy}}</td>
-                        <td>{{item.traffic_allowance}}</td>
-                        <td>{{item.attendance_bonus}}</td>
-                        <td>{{item.performance}}</td>
-                        <td>{{item.other}}</td>
-                        <td>{{item.award}}</td>
-                        <td>
-                            <a href="javascript:;" class="layui-btn layui-btn-normal layui-btn-sm"  @click="editEvent(item)" v-show="chang('/master/staffMessage/update')">编辑</a>
-                            <a href="javascript:;"  class="elementdel layui-btn layui-btn-danger layui-btn-sm" @click="delEvent(item.uid)"  v-show="chang('/master/staffMessage/delete')">删除</a>
-                        </td>
-                    </tr>
-
-                    </tbody>
-                </table>
+                <el-table
+                    :data="signListFilter"
+                    stripe
+                    style="width:100%"
+                    type="flex"
+                    header-align="center"
+                >
+                    <el-table-column
+                        type="index"
+                        label="ID"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                    <el-table-column
+                        prop="username"
+                        label="姓名"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                        <el-table-column
+                        prop="gender"
+                        label="性别"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                        <el-table-column
+                        prop="entrydate"
+                        label="入职时间"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                        <el-table-column
+                        prop="tryoutdate"
+                        label="试用期时间"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                        <el-table-column
+                        prop="justdate"
+                        label="转正时间"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                     <el-table-column
+                        prop="position_id"
+                        label="职称"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                        :formatter="positionFormat"
+                    ></el-table-column>
+                     <el-table-column
+                        prop="birthday"
+                        label="出生日期"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                     <el-table-column
+                        prop="phone"
+                        label="手机号"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                       <el-table-column
+                        prop="email"
+                        label="邮箱"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                       <el-table-column
+                        prop="education"
+                        label="学历"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                       <el-table-column
+                        prop="university"
+                        label="学校"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                          <el-table-column
+                        prop="status"
+                        label="状态"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    >
+           <template slot-scope="scope">
+          <el-tag v-if="scope.row.status==0" type="warning">试用</el-tag>
+          <el-tag v-if="scope.row.status==1">转正</el-tag>
+          <el-tag v-if="scope.row.status==2" type="danger">离职</el-tag>
+        </template>
+                    </el-table-column>
+                          <el-table-column
+                        prop="salary"
+                        label="薪资"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                          <el-table-column
+                        prop="overtime_pay"
+                        label="加班费"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                        
+                          <el-table-column
+                        prop="traffic_allowance"
+                        label="交通补助"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                        
+                          <el-table-column
+                        prop="performance"
+                        label="绩效"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                         
+                               <el-table-column
+                        prop="endowment_insurance"
+                        label="养老保险"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                               <el-table-column
+                        prop="unemploymen_insurance"
+                        label="失业保险"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                          <el-table-column
+                        prop="medical_insurance"
+                        label="医疗保险"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                          <el-table-column
+                        prop="housing_fund"
+                        label="住房公积金"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                          <el-table-column
+                        prop="education_ch"
+                        label="子女教育扣除"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                         <el-table-column
+                        prop="support"
+                        label="赡养扣除"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                         <el-table-column
+                        prop="renting"
+                        label="租房扣除"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                    ></el-table-column>
+                        
+                     <el-table-column
+                        prop="leader_id"
+                        label="上级领导"
+                        width="auto"
+                        show-overflow-tooltip
+                        align="center"
+                        :formatter="leaderFormat"
+                    ></el-table-column>
+                    
+                    <el-table-column label="操作" align="center" fixed="right" width="200px">
+                        <template slot-scope="scope">
+                            <el-button
+                                size="mini"
+                                 @click="editEvent(scope.$index, scope.row)"
+                                >修改</el-button
+                            >
+                            <el-button
+                                size="mini"
+                                type="primary"
+                                style="background-color: 1aa094"
+                                @click="delEvent(scope.row.uid)"
+                                >删除</el-button
+                            >
+                        </template>
+                    </el-table-column>
+                </el-table>
             </div>
             <div class="block page" style="text-align: center" v-show="pageShow">
                  <el-pagination
@@ -127,7 +284,7 @@
                                     <el-form-item label="用户名" prop="uid">
                                         <el-select v-model="ruleFormAdd.uid" placeholder="请输入用户名">
                                             <el-option
-                                                v-for="item in optionsUser"
+                                                v-for="item in optionsUser3"
                                                 :key="item.id"
                                                 :label="item.username"
                                                 :value="item.id">
@@ -143,6 +300,42 @@
                                         <el-radio  :label="'男'"  @click.native.prevent="clickitem1('男')">男</el-radio>
                                         <el-radio  :label="'女'"  @click.native.prevent="clickitem1('女')">女</el-radio>
                                     </el-radio-group>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-inline">
+                                    <el-form-item label="入职时间" prop="entrydate">
+                                        <el-date-picker
+                                            v-model="ruleFormAdd.entrydate"
+                                            type="date"
+                                            value-format="yyyy-MM-dd"
+                                            placeholder="选择入职日期">
+                                        </el-date-picker>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                               <div class="layui-form-item">
+                                <div class="layui-input-inline">
+                                    <el-form-item label="试用期时间" prop="tryoutdate">
+                                        <el-date-picker
+                                            v-model="ruleFormAdd.tryoutdate"
+                                            type="date"
+                                            value-format="yyyy-MM-dd"
+                                            placeholder="选择试用期时间">
+                                        </el-date-picker>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-inline">
+                                    <el-form-item label="转正时间" prop="justdate">
+                                        <el-date-picker
+                                            v-model="ruleFormAdd.justdate"
+                                            type="date"
+                                            value-format="yyyy-MM-dd"
+                                            placeholder="选择转正时间">
+                                        </el-date-picker>
+                                    </el-form-item>
                                 </div>
                             </div>
                             <div class="layui-form-item">
@@ -230,13 +423,7 @@
                                     </el-form-item>
                                 </div>
                             </div>
-                            <div class="layui-form-item">
-                                <div class="layui-input-inline inp">
-                                    <el-form-item label="餐补" prop="meal_subsidy">
-                                        <el-input type="number" v-model="ruleFormAdd.meal_subsidy" placeholder="请输入餐补"></el-input>
-                                    </el-form-item>
-                                </div>
-                            </div>
+                           
                             <div class="layui-form-item">
                                 <div class="layui-input-inline inp">
                                     <el-form-item label="交通补助" prop="traffic_allowance">
@@ -244,13 +431,7 @@
                                     </el-form-item>
                                 </div>
                             </div>
-                            <div class="layui-form-item">
-                                <div class="layui-input-inline inp">
-                                    <el-form-item label="全勤奖" prop="attendance_bonus">
-                                        <el-input type="number" v-model="ruleFormAdd.attendance_bonus" placeholder="请输入全勤奖"></el-input>
-                                    </el-form-item>
-                                </div>
-                            </div>
+                          
                             <div class="layui-form-item">
                                 <div class="layui-input-inline inp">
                                     <el-form-item label="绩效" prop="performance">
@@ -258,17 +439,68 @@
                                     </el-form-item>
                                 </div>
                             </div>
-                            <div class="layui-form-item">
+                          
+                             <div class="layui-form-item">
                                 <div class="layui-input-inline inp">
-                                    <el-form-item label="其他" prop="other">
-                                        <el-input type="number" v-model="ruleFormAdd.other" placeholder="请输入其他"></el-input>
+                                    <el-form-item label="养老保险" prop="endowment_insurance">
+                                        <el-input type="number" v-model="ruleFormAdd.endowment_insurance" placeholder="请输入养老保险"></el-input>
                                     </el-form-item>
                                 </div>
                             </div>
                             <div class="layui-form-item">
                                 <div class="layui-input-inline inp">
-                                    <el-form-item label="奖励" prop="award">
-                                        <el-input type="number" v-model="ruleFormAdd.award" placeholder="请输入奖励"></el-input>
+                                    <el-form-item label="失业保险" prop="unemploymen_insurance">
+                                        <el-input type="number" v-model="ruleFormAdd.unemploymen_insurance" placeholder="请输入失业保险"></el-input>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-inline inp">
+                                    <el-form-item label="医疗保险" prop="medical_insurance">
+                                        <el-input type="number" v-model="ruleFormAdd.medical_insurance" placeholder="请输入医疗保险"></el-input>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                             <div class="layui-form-item">
+                                <div class="layui-input-inline inp">
+                                    <el-form-item label="住房公积金" prop="housing_fund">
+                                        <el-input type="number" v-model="ruleFormAdd.housing_fund" placeholder="请输入住房公积金"></el-input>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                             <div class="layui-form-item">
+                                <div class="layui-input-inline inp">
+                                    <el-form-item label="子女教育扣除" prop="education_ch">
+                                        <el-input type="number" v-model="ruleFormAdd.education_ch" placeholder="请输入子女教育扣除"></el-input>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                             <div class="layui-form-item">
+                                <div class="layui-input-inline inp">
+                                    <el-form-item label="赡养扣除" prop="support">
+                                        <el-input type="number" v-model="ruleFormAdd.support" placeholder="请输入赡养扣除"></el-input>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                             <div class="layui-form-item">
+                                <div class="layui-input-inline inp">
+                                    <el-form-item label="租房扣除" prop="renting">
+                                        <el-input type="number" v-model="ruleFormAdd.renting" placeholder="请输入租房扣除"></el-input>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                            
+                             <div class="layui-form-item">
+                                <div class="layui-input-inline inp">
+                                    <el-form-item label="上级领导" prop="leader_id">
+                                      <el-select v-model="ruleFormAdd.leader_id" placeholder="请输入上级领导">
+                                           <el-option
+                                                v-for="item in optionsUser2"
+                                                :key="item.uid"
+                                                :label="item.username"
+                                                :value="item.uid">
+                                            </el-option>
+                                        </el-select>
                                     </el-form-item>
                                 </div>
                             </div>
@@ -313,7 +545,7 @@
                                     <el-form-item label="用户名" prop="uid">
                                         <el-select v-model="ruleFormEdit.uid" placeholder="请输入用户名" disabled>
                                             <el-option
-                                                v-for="item in optionsUser"
+                                                v-for="item in optionsUser3"
                                                 :key="item.id"
                                                 :label="item.username"
                                                 :value="item.id">
@@ -329,6 +561,42 @@
                                         <el-radio  :label="'男'"  @click.native.prevent="clickitem1('男')">男</el-radio>
                                         <el-radio  :label="'女'"  @click.native.prevent="clickitem1('女')">女</el-radio>
                                     </el-radio-group>
+                                </div>
+                            </div>
+                              <div class="layui-form-item">
+                                <div class="layui-input-inline">
+                                    <el-form-item label="入职时间" prop="entrydate">
+                                        <el-date-picker
+                                            v-model="ruleFormEdit.entrydate"
+                                            type="date"
+                                            value-format="yyyy-MM-dd"
+                                            placeholder="选择入职日期">
+                                        </el-date-picker>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                               <div class="layui-form-item">
+                                <div class="layui-input-inline">
+                                    <el-form-item label="试用期时间" prop="tryoutdate">
+                                        <el-date-picker
+                                            v-model="ruleFormEdit.tryoutdate"
+                                            type="date"
+                                            value-format="yyyy-MM-dd"
+                                            placeholder="选择试用期时间">
+                                        </el-date-picker>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-inline">
+                                    <el-form-item label="转正时间" prop="justdate">
+                                        <el-date-picker
+                                            v-model="ruleFormEdit.justdate"
+                                            type="date"
+                                            value-format="yyyy-MM-dd"
+                                            placeholder="选择转正时间">
+                                        </el-date-picker>
+                                    </el-form-item>
                                 </div>
                             </div>
                             <div class="layui-form-item">
@@ -416,13 +684,7 @@
                                     </el-form-item>
                                 </div>
                             </div>
-                            <div class="layui-form-item">
-                                <div class="layui-input-inline inp">
-                                    <el-form-item label="餐补" prop="meal_subsidy">
-                                        <el-input type="number" v-model="ruleFormEdit.meal_subsidy" placeholder="请输入餐补"></el-input>
-                                    </el-form-item>
-                                </div>
-                            </div>
+                           
                             <div class="layui-form-item">
                                 <div class="layui-input-inline inp">
                                     <el-form-item label="交通补助" prop="traffic_allowance">
@@ -430,13 +692,7 @@
                                     </el-form-item>
                                 </div>
                             </div>
-                            <div class="layui-form-item">
-                                <div class="layui-input-inline inp">
-                                    <el-form-item label="全勤奖" prop="attendance_bonus">
-                                        <el-input type="number" v-model="ruleFormEdit.attendance_bonus" placeholder="请输入全勤奖"></el-input>
-                                    </el-form-item>
-                                </div>
-                            </div>
+                            
                             <div class="layui-form-item">
                                 <div class="layui-input-inline inp">
                                     <el-form-item label="绩效" prop="performance">
@@ -444,17 +700,68 @@
                                     </el-form-item>
                                 </div>
                             </div>
+                           
+                           
                             <div class="layui-form-item">
                                 <div class="layui-input-inline inp">
-                                    <el-form-item label="其他" prop="other">
-                                        <el-input type="number" v-model="ruleFormEdit.other" placeholder="请输入其他"></el-input>
+                                    <el-form-item label="养老保险" prop="endowment_insurance">
+                                        <el-input type="number" v-model="ruleFormEdit.endowment_insurance" placeholder="请输入养老保险"></el-input>
                                     </el-form-item>
                                 </div>
                             </div>
                             <div class="layui-form-item">
                                 <div class="layui-input-inline inp">
-                                    <el-form-item label="奖励" prop="award">
-                                        <el-input type="number" v-model="ruleFormEdit.award" placeholder="请输入奖励"></el-input>
+                                    <el-form-item label="失业保险" prop="unemploymen_insurance">
+                                        <el-input type="number" v-model="ruleFormEdit.unemploymen_insurance" placeholder="请输入失业保险"></el-input>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-inline inp">
+                                    <el-form-item label="医疗保险" prop="medical_insurance">
+                                        <el-input type="number" v-model="ruleFormEdit.medical_insurance" placeholder="请输入医疗保险"></el-input>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                             <div class="layui-form-item">
+                                <div class="layui-input-inline inp">
+                                    <el-form-item label="住房公积金" prop="housing_fund">
+                                        <el-input type="number" v-model="ruleFormEdit.housing_fund" placeholder="请输入住房公积金"></el-input>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                             <div class="layui-form-item">
+                                <div class="layui-input-inline inp">
+                                    <el-form-item label="子女教育扣除" prop="education_ch">
+                                        <el-input type="number" v-model="ruleFormEdit.education_ch" placeholder="请输入子女教育扣除"></el-input>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                             <div class="layui-form-item">
+                                <div class="layui-input-inline inp">
+                                    <el-form-item label="赡养扣除" prop="support">
+                                        <el-input type="number" v-model="ruleFormEdit.support" placeholder="请输入赡养扣除"></el-input>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                             <div class="layui-form-item">
+                                <div class="layui-input-inline inp">
+                                    <el-form-item label="租房扣除" prop="renting">
+                                        <el-input type="number" v-model="ruleFormEdit.renting" placeholder="请输入租房扣除"></el-input>
+                                    </el-form-item>
+                                </div>
+                            </div>
+                             <div class="layui-form-item">
+                                <div class="layui-input-inline inp">
+                                    <el-form-item label="上级领导" prop="leader_id">
+                                       <el-select v-model="ruleFormEdit.leader_id" placeholder="请输入上级领导">
+                                           <el-option
+                                                v-for="item in optionsUser"
+                                                :key="item.uid"
+                                                :label="item.username"
+                                                :value="item.uid">
+                                            </el-option>
+                                        </el-select>
                                     </el-form-item>
                                 </div>
                             </div>
@@ -610,8 +917,11 @@
 //              编辑器内容
                 content:'',
                 signList:[],
+                signListFilter:[],
                 options:[],
                 optionsUser:[],
+                optionsUser2:[],
+                optionsUser3:[],
                 value: '',
                 username:'',
                 position:'',
@@ -632,6 +942,9 @@
                 ruleFormAdd: {
                     uid:'',
                     gender:"男",
+                    entrydate:'',
+                    tryoutdate:'',
+                    justdate:'',
                     position_id:'',
                     birthday:'',
                     phone:'',
@@ -641,13 +954,21 @@
                     status:'',
                     salary:'',
                     overtime_pay:'',
-                    meal_subsidy:'',
+                    // meal_subsidy:'',
                     traffic_allowance:'',
-                    attendance_bonus:'',
+                    // attendance_bonus:'',
                     performance:'',
-                    other:'',
-                    award:''
-
+                    // other:'',
+                    // award:'',
+                    endowment_insurance:'',
+                    unemploymen_insurance:'',
+                    medical_insurance:'',
+                    housing_fund:'',
+                    education_ch:'',
+                    support:'',
+                    renting:'',
+                    // adult_education:20,
+                    leader_id:'0'
         },
                 rulesAdd: {
                     uid: [
@@ -656,6 +977,12 @@
                     gender: [
                         { required: true, message: '请输入性别', trigger: 'blur' }
                     ],
+                    entrydate:[
+                        { required: true, message: '请输入职时间', trigger: 'blur' }
+                    ],
+                     tryoutdate:[
+                        { required: true, message: '请输入试用期时间', trigger: 'blur' }
+                    ],
                     position_id: [
                         { required: true, message: '请输入职称', trigger: 'blur' }
                     ],
@@ -667,10 +994,15 @@
                         {validator: money, trigger: 'blur'}
                     ],
                     phone: [
+                        { required: true, message: '请输入手机号', trigger: 'blur' },
                         {validator: sj, trigger: 'blur'}
                     ],
                     email: [
+                        { required: true, message: '请输入邮箱', trigger: 'blur' },
                         {validator: emails, trigger: 'blur'}
+                    ],
+                    education:[
+                      { required: true, message: '请输入学历', trigger: 'blur' },
                     ],
                     overtime_pay: [
                         {validator: money, trigger: 'blur'}
@@ -693,12 +1025,41 @@
                     award: [
                         {validator: money, trigger: 'blur'}
                     ],
-
+                    endowment_insurance:[
+                        {validator: money, trigger: 'blur'}  
+                    ],
+                    unemploymen_insurance:[
+                        {validator: money, trigger: 'blur'}
+                    ],
+                    medical_insurance:[
+                       {validator: money, trigger: 'blur'}
+                    ],
+                    housing_fund:[
+                        {validator: money, trigger: 'blur'}
+                    ],
+                    education_ch:[
+                        {validator: money, trigger: 'blur'}
+                    ],
+                    support:[
+                        {validator: money, trigger: 'blur'}
+                    ],
+                    renting:[
+                        {validator: money, trigger: 'blur'}
+                    ],
+                    adult_education:[
+                       {validator: money, trigger: 'blur'}
+                    ],
+                    leader_id:[
+                        { required: true, message: '请输入上级领导', trigger: 'blur' }
+                    ]
                 },
                 ruleFormEdit: {
                     id:"",
                     uid:'',
                     gender:"男",
+                     entrydate:'',
+                    tryoutdate:'',
+                    justdate:'',
                     position_id:'',
                     birthday:'',
                     phone:'',
@@ -708,12 +1069,21 @@
                     status:'',
                     salary:'',
                     overtime_pay:'',
-                    meal_subsidy:'',
+                    // meal_subsidy:'',
                     traffic_allowance:'',
-                    attendance_bonus:'',
+                    // attendance_bonus:'',
                     performance:'',
-                    other:'',
-                    award:""
+                    // other:'',
+                    // award:"",
+                    endowment_insurance:'',
+                    unemploymen_insurance:'',
+                    medical_insurance:'',
+                    housing_fund:'',
+                    education_ch:'',
+                    support:'',
+                    renting:'',
+                    // adult_education:'',
+                    leader_id:''
                 },
                 rulesEdit: {
                     uid: [
@@ -721,6 +1091,12 @@
                     ],
                     gender: [
                         { required: true, message: '请输入性别', trigger: 'blur' }
+                    ],
+                     entrydate:[
+                        { required: true, message: '请输入职时间', trigger: 'blur' }
+                    ],
+                     tryoutdate:[
+                        { required: true, message: '请输入试用期时间', trigger: 'blur' }
                     ],
                     position_id: [
                         { required: true, message: '请输入职称', trigger: 'blur' }
@@ -759,6 +1135,33 @@
                     award: [
                         {validator: money, trigger: 'blur'}
                     ],
+                     endowment_insurance:[
+                        {validator: money, trigger: 'blur'}  
+                    ],
+                    unemploymen_insurance:[
+                        {validator: money, trigger: 'blur'}
+                    ],
+                    medical_insurance:[
+                       {validator: money, trigger: 'blur'}
+                    ],
+                    housing_fund:[
+                        {validator: money, trigger: 'blur'}
+                    ],
+                    education_ch:[
+                        {validator: money, trigger: 'blur'}
+                    ],
+                    support:[
+                        {validator: money, trigger: 'blur'}
+                    ],
+                    renting:[
+                        {validator: money, trigger: 'blur'}
+                    ],
+                    adult_education:[
+                       {required: true, message: '请输入扣除金额', trigger: 'blur' }
+                    ],
+                    leader_id:[
+                        { required: true, message: '请输入上级领导', trigger: 'blur' }
+                    ]
                 },
                 data: '',
                 replyData: [],
@@ -770,6 +1173,7 @@
                 infoId:"",
                 uid:'',
                 positionList:[],
+                leaderList:[],
                 optionsedu:[
                     {
                         value: '博士',
@@ -802,7 +1206,35 @@
                 ],
             }
         },
+       
         methods: {
+         //职位名称数据的格式化
+         positionFormat(row,column){
+       
+            // this.positionList.forEach(item => {
+            //    if(item.id==row.position_id){
+            //        console.log('hahaha')
+            //        return item.position
+            //    }
+            // });
+
+         for(var i=0,l=this.positionList.length;i<l;i++){
+         if(row.position_id==this.positionList[i].id){
+           return this.positionList[i].position
+         }
+       }
+         },
+
+         //上级领导数据的格式化
+         leaderFormat(row,column){ 
+         for(var i=0,l=this.optionsUser.length;i<l;i++){
+            if(row.leader_id==this.optionsUser[i].uid){
+           return this.optionsUser[i].username
+         }
+              }
+         },
+
+
             daoEvent(){
                 var me=this;
                 if(me.signList==undefined){
@@ -859,6 +1291,7 @@
                 me.$axios.post(me.url+"master/auth")
                     .then(function (result) {
                         me.auth=result.data;
+                          this.auth=result.data
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -875,42 +1308,37 @@
                 return type;
             },
             addEvent(){
+            
               this.addShow=true;
               this.editShow=false;
               this.menuShow=false;
               this.ruleFormAdd.status=0;
               this.imageUrl='';
               this.ruleFormAdd.content=''
+              this.userEvent();
             },
-            editEvent(val){
+            editEvent(index,val){
                 var me=this;
                 me.addShow=false;
                 me.editShow=true;
                 me.menuShow=false;
-                me.ruleFormEdit.id = val.id;
-                me.ruleFormEdit.uid = val.uid;
-                me.ruleFormEdit.status = val.status;
-                me.ruleFormEdit.gender=val.gender;
-                me.ruleFormEdit.position_id = val.position_id;
-                me.ruleFormEdit.birthday = val.birthday;
-                me.ruleFormEdit.phone=val.phone;
-                me.ruleFormEdit.email=val.email;
-                me.ruleFormEdit.education=val.education;
-                me.ruleFormEdit.university=val.university;
-                me.ruleFormEdit.university=val.university;
-                me.ruleFormEdit.salary=val.salary;
-                me.ruleFormEdit.overtime_pay=val.overtime_pay;
-                me.ruleFormEdit.meal_subsidy=val.meal_subsidy;
-                me.ruleFormEdit.traffic_allowance=val.traffic_allowance;
-                me.ruleFormEdit.attendance_bonus=val.attendance_bonus;
-                me.ruleFormEdit.performance=val.performance;
-                me.ruleFormEdit.other=val.other;
-                me.ruleFormEdit.award=val.award;
+                me.ruleFormEdit = val;
+               
+              
                 if(val.content!=''){
                     me.imageUrl1=me.url+val.content;
                 }
             },
             delEvent(id){
+                  this.$confirm('您确定要删除么, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true,
+           })
+           .then(()=>{
+             
+                console.log(id)
                 var me=this;
                 me.$axios.post(me.url+"master/staffMessage/delete?uid="+id)
                     .then(function (result) {
@@ -931,6 +1359,14 @@
                     .catch(function (error) {
                         console.log(error);
                     })
+           })
+            .catch(()=>{
+               this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+           })
+
             },
             clickitem(status){
                 this.ruleFormAdd.status=status;
@@ -942,31 +1378,47 @@
             },
             signEvent(){
                 var me=this;
-                me.$axios.post(me.url+"master/staffMessage/list?page=" + this.pageNum + "&size=" + this.pageSize+ "&username=" + this.username+ "&position_id=" + this.position)
-                    .then(function (result) {
-                        result.data.list.forEach(function(index){
-                            if(index.status==0){
-                                index.status1='试用'
-                            }
-                            if(index.status==1){
-                                index.status1='转正'
-                            }
-                            if(index.status==2){
-                                index.status1='离职'
-                            }
-                            me.positionList.forEach(function(item){
-                                if(index.position_id==item.id){
-                                    index.position_id1=item.position
-                                }
-                           })
-                        })
-                        me.signList=result.data.list;
-                        me.mytotal=result.data.total;
-                        if(me.mytotal<10){
-                            me.pageShow=false
-                        }else{
-                            me.pageShow=true
-                        }
+                let fordata = new FormData();
+                // fordata.append('username',this.username)
+                // fordata.append('position_id',this.position)
+               if(this.username==''&&this.position==''){
+                fordata.append('page',this.currentPage)
+                fordata.append('size',this.pageSize)
+                }
+               else {
+                  fordata.append('username',this.username)
+                fordata.append('position_id',this.position)
+              }
+                this.$axios.post(this.$baseUrl+"master/staffMessage/list",fordata)
+                    .then(result=> {
+                        // result.data.list.forEach(function(index){
+                        //     if(index.status==0){
+                        //         index.status1='试用'
+                        //     }
+                        //     if(index.status==1){
+                        //         index.status1='转正'
+                        //     }
+                        //     if(index.status==2){
+                        //         index.status1='离职'
+                        //     }
+                        //     this.positionList.forEach(function(item){
+                        //         if(index.position_id==item.id){
+                        //             index.position_id1=item.position
+                        //         }
+                        //    })
+                        // })
+                        this.currentPage=result.data.pageNum;
+                        this.pageSize=result.data.pageSize
+                        this.signList=result.data.list;
+                        this.signListFilter=this.signList.filter(item=>item.leader_id!='0')
+                        console.log(this.signList)
+                        this.mytotal=result.data.total;
+                        // this.mytotal=this.signListFilter.length;
+                        // if(this.mytotal<10){
+                        //     this.pageShow=false
+                        // }else{
+                        //     this.pageShow=true
+                        // }
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -977,7 +1429,7 @@
                 this.signEvent();
             },
             handleCurrentChange(val) {
-                this.pageNum=val;
+                this.currentPage=val;
                 this.signEvent();
             },
             getuser(){
@@ -1085,14 +1537,14 @@
                 var me = this;
                 let fd = new FormData()
                 fd.append('file', f.file)
-                me.$axios.post(me.url + "master/file/uploadimg", fd)
+                me.$axios.post('https://neibu.qklshequ.com/bbs/'+ "master/file/uploadimg", fd)
                     .then(function (result) {
                         if (result.data.result == true) {
                             me.$message({
                                 message: '上传成功',
                                 type: 'success'
                             })
-                            me.imageUrl=me.url+result.data.pojo;
+                            me.imageUrl='https://neibu.qklshequ.com/bbs'+result.data.pojo;
                             me.ruleFormAdd.content=result.data.pojo;
                             me.ruleFormEdit.content=result.data.pojo;
                         }
@@ -1221,22 +1673,28 @@
                         console.log(error);
                     });
             },
-            userEvent(){
-                var me = this;
-                me.$axios.post(me.url+"master/user/list")
-                    .then(function (result) {
-                        me.optionsUser=result.data
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
+           async userEvent(){
+                let res=await this.$axios.post(this.url+'master/staffMessage/staffList')
+                this.optionsUser=res.data.pojo
+                this.optionsUser2=res.data.pojo
+                let obj={
+                    uid:'0',
+                    username:'无上级领导'
+                }
+            this.optionsUser2.push(obj);
+            //  this.optionsUser2=this.optionsUser2.push(obj).reverse();
+            },
+            async userEvent2(){
+                let res=await this.$axios.post(this.url+'master/user/list')
+                this.optionsUser3=res.data
             }
         },
-        mounted(){
-            var me=this;
-            me.userEvent();
+        created(){
+             var me=this;
+            this.userEvent();
+            this.userEvent2();
             me.positionEvent();
-            me.signEvent();
+            this.signEvent();
             me.authorityEvent();
 //           所属权限组
             me.$axios.post(me.url+"master/staffMessage/grouplist")
@@ -1257,10 +1715,10 @@
     }
 </script>
 
-<style lang="less">
+<style lang="less" >
     @import '../../style/mixin';
     .layui-form{
-        overflow:scroll;
+        overflow:hidden;
     }
     .layui-field-box {
         padding: 5px 15px;
@@ -1270,7 +1728,7 @@
         bottom:20px;
         right:20px;
         width:100%;
-        overflow: scroll;
+        overflow: hidden;
     }
     .layui-tab-content{
         overflow-y: scroll!important;
@@ -1303,4 +1761,19 @@
         line-height:33px;
         text-align: center;
     }
+  .info ::-webkit-scrollbar {
+   
+    height: 5px !important;
+    background-color: #F5F5F5;
+}
+  .info .layui-form {
+ overflow: hidden;
+}
+
+.info .layui-tab-content {
+    overflow: hidden;
+}
+.info .page{
+    overflow: hidden;
+}
 </style>

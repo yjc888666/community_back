@@ -17,7 +17,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(item,index) in menuFriList" v-show="oneShow" :key="index">
+                <tr v-for="(item,index) in menuFriList" v-show="oneShow" :key="index+10">
                     <td>一级{{index+1}}</td>
                     <td>{{item.sort}}</td>
                     <td> {{item.title}}</td>
@@ -45,8 +45,8 @@
                         <a href="javascript:;" class="layui-btn layui-btn-sm"  @click="moreEvent(item.id)">二级列表</a>
                     </td>
                 </tr>
-
-                <tr v-for="(item,index) in menuSecList" v-show="twoShow" :key="index">
+                
+                    <tr v-for="(item,index) in menuSecList" v-show="twoShow" :key="index+200">
                     <td>二级{{index+1}}</td>
                     <td>{{item.sort}}</td>
                     <td> {{item.title}}</td>
@@ -73,8 +73,12 @@
                         <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-danger"  @click="backOne()">返回一级列表</a>
                     </td>
                 </tr>
-
-                <tr v-for="(item,index) in menuThrList" v-show="threeShow" :key="index">
+           
+                   
+               
+               
+                
+                   <tr v-for="(item,index) in menuThrList" v-show="threeShow" :key="index+300">
                     <td>三级{{index+1}}</td>
                     <td>{{item.sort}}</td>
                     <td> {{item.title}}</td>
@@ -100,6 +104,8 @@
                         <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-danger"  @click="backTwo()">返回二级列表</a>
                     </td>
                 </tr>
+                
+               
                 </tbody>
             </table>
         </div>

@@ -67,18 +67,19 @@
         <div class="manage_page">
 
                 <div  id="admin-side"  :class="{'layui-bg-black':sideShow,'layui-bg-false':!sideShow,'layui-side':mask}">
-                      <el-menu :default-active="defaultActive" style="height: 100%;overflow: auto;" theme="dark" router @select="handleSelectSide">
-                        <!--<el-menu-item index="manage" :style="{'background':'#393D49'}"><i class="fa fa-sliders" aria-hidden="true" data-icon="fa-sliders"></i>已装插件</el-menu-item>-->
+                      <el-menu :default-active="defaultActive" style="height: 100%;overflow: auto;"  router @select="handleSelectSide" text-color="hsla(0,0%,100%,.7)" class="el-menu-vertical-demo">
+                        <!-- <el-menu-item index="manage" :style="{'background':'#393D49'}"><i class="fa fa-sliders" aria-hidden="true" data-icon="fa-sliders"></i>已装插件</el-menu-item> -->
 
-                          <el-submenu index="1">
-                              <template slot="title"><i class="fa fa fa-home" aria-hidden="true" data-icon="fa fa-home"></i>考勤管理<span class="layui-nav-more"></span></template>
+                          <el-submenu index="1" >
+                              <template slot="title"><i class="fa fa-home" aria-hidden="true" data-icon="fa fa-home"></i>考勤管理<span class="layui-nav-more"></span></template>
                               <!--<el-menu-item index="sign" @click="tagMenu('sign','签到管理')" v-show="chang('/master/sign/list')">签到管理</el-menu-item>-->
-                              <el-menu-item index="sign" @click="tagMenu('sign','签到管理')" v-if="chang('/master/sign/list')">签到管理</el-menu-item>
+                              <el-menu-item index="sign" @click="tagMenu('sign','签到管理')" v-if="chang('/master/sign/list')" >签到管理</el-menu-item>
                               <el-menu-item index="attendance" @click="tagMenu('attendance','迟到早退')" v-if="chang('/master/sign/getByKey')">迟到早退</el-menu-item>
                               <el-menu-item index="leave" @click="tagMenu('leave','请假调休')"  v-if="chang('/master/leave/all')">请假调休</el-menu-item>
                               <el-menu-item index="holiday" @click="tagMenu('holiday','加班考勤')" v-if="chang('/master/rest/allRest')">加班考勤</el-menu-item>
                               <el-menu-item index="outwork" @click="tagMenu('outwork','外出考勤')" v-if="chang('/master/outwork/all')">外出考勤</el-menu-item>
                               <el-menu-item index="absenteeism" @click="tagMenu('absenteeism','旷工记录')" v-if="chang('/master/stafAbsenteeism/list')">旷工记录</el-menu-item>
+                              <el-menu-item index="viewAttendance" @click="tagMenu('viewAttendance','考勤信息')" >考勤信息</el-menu-item>
                           </el-submenu>
 
                          <el-submenu index="2" >
@@ -140,8 +141,17 @@
                               <el-menu-item index="download" @click="tagMenu('download','下载纪录')" v-if="chang('/master/forum/bypage')">下载纪录</el-menu-item>
                               <el-menu-item index="bug" @click="tagMenu('bug','购买纪录')" v-if="chang('/master/forum/buypage')">购买纪录</el-menu-item>
                           </el-submenu>
+                           <el-submenu index="11">
+                              <template slot="title"><i class="fa fa-university" aria-hidden="true" data-icon="fa-braille"></i>部门岗位管理<span class="layui-nav-more"></span></template>
+                              <el-menu-item index="part" @click="tagMenu('part','部门管理')" >部门管理</el-menu-item>
+                              <el-menu-item index="job" @click="tagMenu('job','岗位管理')" >岗位管理</el-menu-item>
+                          </el-submenu>
                           <div style="height:100px;"></div>
                       </el-menu>
+
+
+
+                      
                 </div>
                 <div   id="admin-body" :class="{'layui-body':sideShow,'layui-false':!sideShow}">
                     <div class="layui-tab admin-nav-card layui-tab-brief" lay-filter="admin-tab" style="margin:0px">
@@ -208,6 +218,9 @@
                                 <router-view></router-view>
                             </keep-alive>
                        </div>
+                          
+                            
+                      
                 </div>
               </div>
 
@@ -553,6 +566,9 @@
                 if(sessionStorage.getItem("redirect")=='/integral'){
                     this.tagMenu(sessionStorage.getItem("redirect"),'积分记录')
                 }
+                if(sessionStorage.getItem("redirect")=='/viewAttendance'){
+                    this.tagMenu(sessionStorage.getItem("redirect"),'考勤信息')
+                }
                 if(sessionStorage.getItem("redirect")=='/leave'){
                     this.tagMenu(sessionStorage.getItem("redirect"),'请假记录')
                 }
@@ -594,6 +610,12 @@
                 }
                 if(sessionStorage.getItem("redirect")=='/changeRecord'){
                     this.tagMenu(sessionStorage.getItem("redirect"),'项目记录')
+                }
+                 if(sessionStorage.getItem("redirect")=='/part'){
+                    this.tagMenu(sessionStorage.getItem("redirect"),'部门管理')
+                }
+                 if(sessionStorage.getItem("redirect")=='/job'){
+                    this.tagMenu(sessionStorage.getItem("redirect"),'岗位管理')
                 }
             }
         },
@@ -655,6 +677,13 @@
         width: 24px;
         text-align: center;
     }
+    .el-submenu__title:hover{
+       background-color: #000!important;
+    }
+    .el-submenu__title:focus, .el-submenu__title:hover{
+     outline: 0 !important;
+     background-color: #000!important;
+}
     .el-menu-item {
         background:#282B33;
         color: rgba(255,255,255,.7)!important;

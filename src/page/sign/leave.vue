@@ -284,6 +284,7 @@
                 this.ruleFormAdd.status=1
                 this.ruleFormAdd.name=name
                 this.ruleFormAdd.id=id;
+                // this.ruleFormAdd.leader_id='4'
             },
             submitFormAdd(formName) {
                 this.$refs[formName].validate((valid) => {
